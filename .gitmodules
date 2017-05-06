@@ -1,0 +1,9 @@
+[submodule "external/googletest"]
+	path = external/googletest
+	url = https://github.com/google/googletest.git
+[submodule "external/ncode_common"]
+	path = external/ncode_common
+	url = https://github.com/ngvozdiev/ncode-common.git
+[submodule "external/ncode_net"]
+	path = external/ncode_net
+	url = https://github.com/ngvozdiev/ncode-net.git

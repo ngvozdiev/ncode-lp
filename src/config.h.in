@@ -1,0 +1,7 @@
+#ifndef NCODE_CONFIG_H
+#define NCODE_CONFIG_H
+
+// The LP solver
+#define LP_SOLVER_${OPTIMIZER} 
+
+#endif
