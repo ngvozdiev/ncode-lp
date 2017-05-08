@@ -1,9 +1,13 @@
 cmake_minimum_required(VERSION 2.8.7)
 
-project(NCodeLP)
+# If there is already a target called ncode_common someone has already
+# added this project. Will ignore.
+if(TARGET ncode_lp)
+  return()
+endif(TARGET ncode_lp)
 
+project(NCodeLP)
 option(NCODE_LP_DISABLE_TESTS "If tests should be compiled or not" ON)
-option(NCODE_LP_DISABLE_BENCHMARKS "If benchmarks should be compiled or not" ON)
 option(NCODE_LP_DEBUG "A debug build" OFF)
 option(NCODE_LP_ASAN "Compile with ASAN on" OFF)
 option(NCODE_LP_TSAN "Compile with TSAN on" OFF)
@@ -19,13 +23,8 @@ if (NCODE_LP_TSAN)
    set(NCODE_LP_BASE_LD_FLAGS "${NCODE_LP_BASE_LD_FLAGS} -fsanitize=thread")
 endif()
 
-if(APPLE)
-elseif(UNIX)
-  set(NCODE_LP_BASE_FLAGS "${NCODE_LP_BASE_FLAGS} -pthread")
-endif()
-
 if (NCODE_LP_DEBUG)
-  set(NCODE_LP_BASE_FLAGS "${NCODE_LP_BASE_FLAGS} -O0 -fno-omit-frame-pointer --coverage")
+  set(NCODE_LP_BASE_FLAGS "${NCODE_LP_BASE_FLAGS} -O0 -fno-omit-frame-pointer")
 else()
   set(NCODE_LP_BASE_FLAGS "${NCODE_LP_BASE_FLAGS} -O3 -march=native -DNDEBUG")   
 endif()
@@ -81,27 +80,14 @@ configure_file(
 
 add_subdirectory(external/ncode_common)
 add_subdirectory(external/ncode_net)
-include_directories(${CMAKE_SOURCE_DIR}/external ${PROJECT_BINARY_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/external ${PROJECT_BINARY_DIR} ${OPTIMIZER_INCLUDE_DIRS})
 
-################################
-# Network-releated stuff
-################################
-set(LP_HEADER_FILES src/lp.h src/mc_flow.h)
-add_library(ncode_lp SHARED src/lp.cc src/mc_flow.cc)
+set(LP_HEADER_FILES src/lp.h src/mc_flow.h src/demand_matrix.h)
+add_library(ncode_lp STATIC src/lp.cc src/mc_flow.cc src/demand_matrix.cc)
 target_link_libraries(ncode_lp ncode_net ${OPTIMIZER_LIBRARIES})
 
 if (NOT NCODE_LP_DISABLE_TESTS)
   add_test_exec(lp_test src/lp_test.cc ncode_lp)
   add_test_exec(lp_mc_flow_test src/mc_flow_test.cc ncode_lp)
+  add_test_exec(lp_demand_matrix_test src/demand_matrix_test.cc ncode_lp)
 endif()
-
-if (NOT NCODE_LP_DISABLE_BENCHMARKS)
-  #add_executable(net_algorithm_benchmark src/algorithm_benchmark.cc)
-endif()
-
-INSTALL(TARGETS ncode_lp
-  DESTINATION "lib")
-
-INSTALL (
-  FILES ${LP_HEADER_FILES}
-  DESTINATION include/ncode/ncode_lp)

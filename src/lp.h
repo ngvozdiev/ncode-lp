@@ -118,9 +118,6 @@ class Problem {
   std::unique_ptr<Solution> Solve(
       std::chrono::milliseconds time_limit = std::chrono::milliseconds::max());
 
-  // Whether or not to conserve memory.
-  void set_memory_switch(bool value) { memory_switch_ = value; }
-
  private:
   // Implementation-specific opaque handle. This is ugly, but it allows us to
   // keep the actual optimizer-specific implementation in the .cc file. This way
@@ -129,9 +126,6 @@ class Problem {
 
   // True if any of the variables are binary.
   bool has_binary_variables_;
-
-  // If true will try to conserve memory.
-  bool memory_switch_;
 
   DISALLOW_COPY_AND_ASSIGN(Problem);
 };
