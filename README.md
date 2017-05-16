@@ -18,7 +18,7 @@ sometimes fails to properly detect CPLEX and manual intervention may be needed.
 
 There are two classes that can be used to create and solve LP problems, they are
 both in `lp.h`.  The following example maximizes 5 * x1 + 6 * x2 subject to the
-0 <= x1 + x2, 3 <= x1 - x2 and 5 * x1 + 4 * x2 <= 35 constraints.
+0 <= x1 + x2 <= 10, 3 <= x1 - x2 and 5 * x1 + 4 * x2 <= 35 constraints.
 
 ```c++
 #include "lp.h"
