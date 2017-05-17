@@ -26,7 +26,7 @@ endif()
 if (NCODE_LP_DEBUG)
   set(NCODE_LP_BASE_FLAGS "${NCODE_LP_BASE_FLAGS} -O0 -fno-omit-frame-pointer")
 else()
-  set(NCODE_LP_BASE_FLAGS "${NCODE_LP_BASE_FLAGS} -O3 -march=native -DNDEBUG")   
+  set(NCODE_LP_BASE_FLAGS "${NCODE_LP_BASE_FLAGS} -O3 -march=native -DNDEBUG")
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${NCODE_LP_BASE_FLAGS}")
@@ -78,9 +78,17 @@ configure_file(
   "${PROJECT_SOURCE_DIR}/src/config.h.in"
   "${PROJECT_BINARY_DIR}/ncode_config.h")
 
-add_subdirectory(external/ncode_common)
-add_subdirectory(external/ncode_net)
-include_directories(${CMAKE_SOURCE_DIR}/external ${PROJECT_BINARY_DIR} ${OPTIMIZER_INCLUDE_DIRS})
+if (NOT TARGET ncode_common)
+   EXECUTE_PROCESS(COMMAND "git" "clone" "https://github.com/ngvozdiev/ncode-common.git" "${CMAKE_BINARY_DIR}/external/ncode_common")
+   add_subdirectory(${CMAKE_BINARY_DIR}/external/ncode_common)
+endif()
+
+if (NOT TARGET ncode_net)
+   EXECUTE_PROCESS(COMMAND "git" "clone" "https://github.com/ngvozdiev/ncode-net.git" "${CMAKE_BINARY_DIR}/external/ncode_net")
+   add_subdirectory(${CMAKE_BINARY_DIR}/external/ncode_net)
+endif()
+
+include_directories(${CMAKE_SOURCE_DIR}/external ${PROJECT_BINARY_DIR} ${OPTIMIZER_INCLUDE_DIRS} ${CMAKE_BINARY_DIR}/external)
 
 set(LP_HEADER_FILES src/lp.h src/mc_flow.h src/demand_matrix.h)
 add_library(ncode_lp STATIC src/lp.cc src/mc_flow.cc src/demand_matrix.cc)

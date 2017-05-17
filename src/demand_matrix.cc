@@ -4,8 +4,8 @@
 #include <set>
 
 #include "ncode_common/src/map_util.h"
-#include "ncode_net/external/ncode_common/src/logging.h"
-#include "ncode_net/external/ncode_common/src/perfect_hash.h"
+#include "ncode_common/src/logging.h"
+#include "ncode_common/src/perfect_hash.h"
 #include "ncode_net/src/algorithm.h"
 #include "lp.h"
 #include "mc_flow.h"
