@@ -21,6 +21,8 @@ class FlowAndPath {
 
   const net::Walk& path() const { return *path_; }
 
+  std::unique_ptr<net::Walk> TakeOwnershipOfPath() { return std::move(path_); }
+
   friend bool operator==(const FlowAndPath& lhs, const FlowAndPath& rhs) {
     return std::tie(lhs.flow_, *lhs.path_) == std::tie(rhs.flow_, *rhs.path_);
   }
